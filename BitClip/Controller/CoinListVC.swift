@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class CoinListVC: UIViewController {
 
@@ -17,7 +18,8 @@ class CoinListVC: UIViewController {
     //Variables
     var isSearching = false
     var filteredData: [String] = []
-    var coin = ""
+    var coinName = ""
+    var comparisonCoin: ComparisonCoinType = .btc
     
     
     override func viewDidLoad() {
@@ -26,7 +28,32 @@ class CoinListVC: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
     }
-
+    
+    func setComparisonCoin(coin: String) -> ComparisonCoinType {
+        if coin.hasSuffix(ComparisonCoinType.btc.rawValue) {
+            return ComparisonCoinType.btc
+        } else if coin.hasSuffix(ComparisonCoinType.eth.rawValue) {
+            return ComparisonCoinType.eth
+        } else {
+            return ComparisonCoinType.usdt
+        }
+    }
+    
+    func saveToPhone(completion: @escaping CompletionHandler) {
+        guard let managedContext = appDelegate?.persistentContainer.viewContext else {return}
+        let coin = Coin(context: managedContext)
+        
+        coin.name = coinName
+        coin.comparedTo = setComparisonCoin(coin: coinName).rawValue
+        
+        do {
+            try managedContext.save()
+            print("Saved")
+            completion(true)
+        } catch {
+            completion(false)
+        }
+    }
 }
 
 extension CoinListVC: UITableViewDelegate, UITableViewDataSource {
@@ -41,18 +68,27 @@ extension CoinListVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "coinListCell") as? CoinListCell else {return UITableViewCell()}
         
-        if filteredData.count > 0 {
-            coin = filteredData[indexPath.row]
+        if !isSearching {
+            coinName = filteredData[indexPath.row]
         } else {
-            //coin =
+            coinName = BinanceService.instance.coins[indexPath.row]
         }
-        cell.configCell(name: coin)
+        
+        cell.configCell(name: coinName)
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if !filteredData.isEmpty {
             //save coin to coredata
+            coinName = filteredData[indexPath.row]
+            saveToPhone(completion: { (complete) in
+                if complete {
+                    self.searchBar.text = ""
+                    self.isSearching = false
+                    self.view.endEditing(true)
+                }
+            })
         }
     }
 }
@@ -61,6 +97,7 @@ extension CoinListVC: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if (searchBar.text ?? "").isEmpty {
             isSearching = false
+            view.endEditing(true)
             tableView.reloadData()
         } else {
             isSearching = true

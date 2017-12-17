@@ -11,5 +11,5 @@ import Foundation
 enum ComparisonCoinType: String {
     case btc = "BTC"
     case eth = "ETH"
-    case usd = "USD"
+    case usdt = "USDT"
 }
