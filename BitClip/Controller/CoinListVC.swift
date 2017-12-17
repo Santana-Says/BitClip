@@ -62,16 +62,20 @@ extension CoinListVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return filteredData.count
+        if isSearching {
+            return filteredData.count
+        } else {
+            return CoreData.instance.userCoins.count
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "coinListCell") as? CoinListCell else {return UITableViewCell()}
         
-        if !isSearching {
+        if isSearching {
             coinName = filteredData[indexPath.row]
         } else {
-            coinName = BinanceService.instance.coins[indexPath.row]
+            coinName = CoreData.instance.userCoins[indexPath.row].name!
         }
         
         cell.configCell(name: coinName)
@@ -86,10 +90,31 @@ extension CoinListVC: UITableViewDelegate, UITableViewDataSource {
                 if complete {
                     self.searchBar.text = ""
                     self.isSearching = false
+                    self.filteredData.removeAll()
                     self.view.endEditing(true)
+                    CoreData.instance.fetchCoins()
+                    self.tableView.reloadData()
                 }
             })
         }
+    }
+    
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
+        return .none
+    }
+    
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        let deleteAction = UITableViewRowAction(style: .destructive, title: "DELETE") { (rowAction, indexPath) in
+            CoreData.instance.removeCoin(atIndexPath: indexPath)
+            CoreData.instance.fetchCoins()
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+        }
+        deleteAction.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
+        return [deleteAction]
     }
 }
 

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class ProfitVC: UIViewController {
 
@@ -21,6 +22,11 @@ class ProfitVC: UIViewController {
         
         
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        CoreData.instance.fetchCoins()
+        tableView.reloadData()
+    }
 
     @IBAction func ComparisonCoinPressed(_ sender: Any) {
     }
@@ -34,12 +40,12 @@ extension ProfitVC: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
+        return CoreData.instance.userCoins.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "profitCell") as? ProfitCell else {return UITableViewCell()}
-        cell.configCell(name: "TRX", price: "0.004142", change: "65.93")
+        cell.configCell(name: CoreData.instance.userCoins[indexPath.row].name!, price: "0.004142", change: "65.93")
         return cell
     }
 }

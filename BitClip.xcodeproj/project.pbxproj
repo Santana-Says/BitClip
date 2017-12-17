@@ -21,6 +21,7 @@
 		B5660D8A1FE5AE76007977B1 /* ComparisonCoinType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5660D891FE5AE76007977B1 /* ComparisonCoinType.swift */; };
 		B5660D8C1FE5E140007977B1 /* BinanceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5660D8B1FE5E140007977B1 /* BinanceService.swift */; };
 		B5660D8E1FE5FB41007977B1 /* CoinListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5660D8D1FE5FB41007977B1 /* CoinListCell.swift */; };
+		B5660D901FE71D82007977B1 /* CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5660D8F1FE71D82007977B1 /* CoreData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +42,7 @@
 		B5660D891FE5AE76007977B1 /* ComparisonCoinType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComparisonCoinType.swift; sourceTree = "<group>"; };
 		B5660D8B1FE5E140007977B1 /* BinanceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinanceService.swift; sourceTree = "<group>"; };
 		B5660D8D1FE5FB41007977B1 /* CoinListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoinListCell.swift; sourceTree = "<group>"; };
+		B5660D8F1FE71D82007977B1 /* CoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreData.swift; sourceTree = "<group>"; };
 		D5F575B5D18110C8EA9859B7 /* Pods_BitClip.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BitClip.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -148,6 +150,7 @@
 			isa = PBXGroup;
 			children = (
 				B5660D861FE5A91D007977B1 /* Constants.swift */,
+				B5660D8F1FE71D82007977B1 /* CoreData.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -287,6 +290,7 @@
 				B5660D8A1FE5AE76007977B1 /* ComparisonCoinType.swift in Sources */,
 				B5660D8C1FE5E140007977B1 /* BinanceService.swift in Sources */,
 				B5660D7F1FE58AE8007977B1 /* ProfitCell.swift in Sources */,
+				B5660D901FE71D82007977B1 /* CoreData.swift in Sources */,
 				B5660D8E1FE5FB41007977B1 /* CoinListCell.swift in Sources */,
 				B5660D7D1FE585BB007977B1 /* CoinListVC.swift in Sources */,
 				B5660D671FE4B988007977B1 /* ProfitVC.swift in Sources */,

@@ -9,6 +9,7 @@
 import UIKit
 
 let appDelegate = UIApplication.shared.delegate as? AppDelegate
+let managedContext  = appDelegate?.persistentContainer.viewContext
 
 typealias CompletionHandler = (_ Success: Bool) -> ()
 
