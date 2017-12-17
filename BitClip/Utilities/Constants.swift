@@ -10,4 +10,9 @@ import UIKit
 
 let appDelegate = UIApplication.shared.delegate as? AppDelegate
 
-var coins: [Coin] = []
+typealias CompletionHandler = (_ Success: Bool) -> ()
+
+//URLs
+let BASE_URL = "https://api.binance.com"
+let TICKER_URL = BASE_URL + "/api/v1/ticker/24hr"
+
