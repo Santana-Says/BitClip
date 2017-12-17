@@ -124,10 +124,10 @@
             </objects>
             <point key="canvasLocation" x="476" y="133.5832083958021"/>
         </scene>
-        <!--View Controller-->
+        <!--Coin ListVC-->
         <scene sceneID="OgK-fe-qRz">
             <objects>
-                <viewController id="m8T-7i-2df" sceneMemberID="viewController">
+                <viewController id="m8T-7i-2df" customClass="CoinListVC" customModule="BitClip" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="K7t-4F-cOI">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -140,7 +140,7 @@
                                 <rect key="frame" x="0.0" y="150" width="414" height="586"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="Coin List Cell" id="Gpf-Hp-zOs">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="coinListCell" id="Gpf-Hp-zOs" customClass="CoinListCell" customModule="BitClip" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="414" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Gpf-Hp-zOs" id="uJC-iZ-2Ia">
@@ -161,6 +161,7 @@
                                         </tableViewCellContentView>
                                         <gestureRecognizers/>
                                         <connections>
+                                            <outlet property="nameLbl" destination="rTq-TY-N1w" id="INF-Z0-IQF"/>
                                             <outletCollection property="gestureRecognizers" destination="xVI-0Z-SM2" appends="YES" id="PhR-j6-lYZ"/>
                                         </connections>
                                     </tableViewCell>
@@ -179,6 +180,10 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="dcp-p4-rjw"/>
                     </view>
+                    <connections>
+                        <outlet property="searchBar" destination="k1q-64-990" id="0FG-5E-Srs"/>
+                        <outlet property="tableView" destination="OqP-Ef-KuK" id="Gbd-Yr-egu"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sce-YO-uer" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <swipeGestureRecognizer direction="right" id="xVI-0Z-SM2"/>

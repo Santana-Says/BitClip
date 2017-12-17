@@ -37,7 +37,7 @@ class BinanceService {
         let json = JSON(data)
         for coin in json.arrayValue {
             let name = coin["symbol"].stringValue
-//            let price = coin["priceChange"]
+//            let price = coin["lastPrice"]
 //            let percentChange = coin["priceChangePercent"]
             
             coins.append(name)
