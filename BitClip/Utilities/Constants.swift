@@ -12,6 +12,7 @@ let appDelegate = UIApplication.shared.delegate as? AppDelegate
 let managedContext  = appDelegate?.persistentContainer.viewContext
 
 typealias CompletionHandler = (_ Success: Bool) -> ()
+typealias coinTuple = (name: String, price: String, percentChange: String, compareCoin: String)
 
 //URLs
 let BASE_URL = "https://api.binance.com"

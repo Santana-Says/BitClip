@@ -45,7 +45,11 @@ extension ProfitVC: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "profitCell") as? ProfitCell else {return UITableViewCell()}
-        cell.configCell(name: CoreData.instance.userCoins[indexPath.row].name!, price: "0.004142", change: "65.93")
+        cell.configCell(
+            name: CoreData.instance.userCoins[indexPath.row].name!,
+            price: CoreData.instance.userCoins[indexPath.row].price!,
+            change: CoreData.instance.userCoins[indexPath.row].percentChange!
+        )
         return cell
     }
 }

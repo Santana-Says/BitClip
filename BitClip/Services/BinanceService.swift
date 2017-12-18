@@ -13,34 +13,50 @@ import SwiftyJSON
 class BinanceService {
     
     static let instance = BinanceService()
-    var coins: [String] = []
+    
+    var allCoins: [coinTuple] = []
+    var allCoinNames: [String] = []
+    
     
     func getCoinTrades(completion: @escaping CompletionHandler) {
         Alamofire.request(TICKER_URL).responseJSON { (response) in
             if response.result.error == nil {
                 guard let data = response.data else {return}
-                self.setCoinInfo(data: data)
+                self.getCoinNames(data: data)
                 
-                if self.coins.count > 0 {
-                    print("Coins saved")
-                    print(self.coins)
+                if self.allCoins.count > 0 {
                     completion(true)
                 } else {
-                    print("Failed to retreive coins")
                     completion(false)
                 }
             }
         }
     }
     
-    func setCoinInfo(data: Data) {
+    func getCoinNames(data: Data) {
         let json = JSON(data)
-        for coin in json.arrayValue {
-            let name = coin["symbol"].stringValue
-//            let price = coin["lastPrice"]
-//            let percentChange = coin["priceChangePercent"]
+        for info in json.arrayValue {
+            let name = info["symbol"].stringValue
+            let coin = (
+                name,
+                info["lastPrice"].stringValue,
+                info["priceChangePercent"].stringValue,
+                setComparisonCoin(coin: name).rawValue
+            )
             
-            coins.append(name)
+            allCoins.append(coin)
+            allCoinNames.append(name)
         }
     }
+    
+    func setComparisonCoin(coin: String) -> ComparisonCoinType {
+        if coin.hasSuffix(ComparisonCoinType.btc.rawValue) {
+            return ComparisonCoinType.btc
+        } else if coin.hasSuffix(ComparisonCoinType.eth.rawValue) {
+            return ComparisonCoinType.eth
+        } else {
+            return ComparisonCoinType.usdt
+        }
+    }
+    
 }

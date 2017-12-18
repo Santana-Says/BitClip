@@ -17,9 +17,8 @@ class CoinListVC: UIViewController {
     
     //Variables
     var isSearching = false
-    var filteredData: [String] = []
-    var coinName = ""
-    var comparisonCoin: ComparisonCoinType = .btc
+    var filteredData: [coinTuple] = []
+    var selectedCoin: coinTuple!
     
     
     override func viewDidLoad() {
@@ -29,22 +28,14 @@ class CoinListVC: UIViewController {
         tableView.dataSource = self
     }
     
-    func setComparisonCoin(coin: String) -> ComparisonCoinType {
-        if coin.hasSuffix(ComparisonCoinType.btc.rawValue) {
-            return ComparisonCoinType.btc
-        } else if coin.hasSuffix(ComparisonCoinType.eth.rawValue) {
-            return ComparisonCoinType.eth
-        } else {
-            return ComparisonCoinType.usdt
-        }
-    }
-    
     func saveToPhone(completion: @escaping CompletionHandler) {
         guard let managedContext = appDelegate?.persistentContainer.viewContext else {return}
         let coin = Coin(context: managedContext)
         
-        coin.name = coinName
-        coin.comparedTo = setComparisonCoin(coin: coinName).rawValue
+        coin.name = selectedCoin.name
+        coin.price = selectedCoin.price
+        coin.percentChange = selectedCoin.percentChange
+        coin.comparedTo = selectedCoin.compareCoin
         
         do {
             try managedContext.save()
@@ -73,19 +64,24 @@ extension CoinListVC: UITableViewDelegate, UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "coinListCell") as? CoinListCell else {return UITableViewCell()}
         
         if isSearching {
-            coinName = filteredData[indexPath.row]
+            selectedCoin = filteredData[indexPath.row]
         } else {
-            coinName = CoreData.instance.userCoins[indexPath.row].name!
+            selectedCoin = (
+                CoreData.instance.userCoins[indexPath.row].name,
+                CoreData.instance.userCoins[indexPath.row].price,
+                CoreData.instance.userCoins[indexPath.row].percentChange,
+                CoreData.instance.userCoins[indexPath.row].comparedTo
+                ) as! coinTuple
         }
         
-        cell.configCell(name: coinName)
+        cell.configCell(coin: selectedCoin)
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if !filteredData.isEmpty {
             //save coin to coredata
-            coinName = filteredData[indexPath.row]
+            selectedCoin = filteredData[indexPath.row]
             saveToPhone(completion: { (complete) in
                 if complete {
                     self.searchBar.text = ""
@@ -126,7 +122,7 @@ extension CoinListVC: UISearchBarDelegate {
             tableView.reloadData()
         } else {
             isSearching = true
-            filteredData = BinanceService.instance.coins.filter({$0.hasPrefix(searchBar.text!)})
+            filteredData = BinanceService.instance.allCoins.filter({$0.name.hasPrefix(searchBar.text!)})
             tableView.reloadData()
         }
     }

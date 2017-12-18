@@ -13,8 +13,8 @@ class CoinListCell: UITableViewCell {
     //Outlets
     @IBOutlet weak var nameLbl: UILabel!
     
-    func configCell(name: String) {
-        nameLbl.text = name
+    func configCell(coin: coinTuple) {
+        nameLbl.text = coin.name
     }
 
 }
