@@ -14,6 +14,7 @@ class ProfitVC: UIViewController {
     //Outlets
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var ComparisonSegControl: UISegmentedControl!
+    @IBOutlet weak var spinner: UIActivityIndicatorView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,13 +25,38 @@ class ProfitVC: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        CoreData.instance.fetchCoins()
-        tableView.reloadData()
+        super.viewWillAppear(animated)
+        refreshCoins()
+    }
+    
+    func refreshCoins() {
+        tableView.isHidden = true
+        spinner.startAnimating()
+        CoreData.instance.fetchCoreData { (complete) in
+            if complete {
+                BinanceService.instance.getAllCoinData(completion: { (complete) in
+                    if complete {
+                        CoreData.instance.updateCoinsOnPhone(completion: { (complete) in
+                            if complete {
+                                self.spinner.stopAnimating()
+                                self.tableView.reloadData()
+                                self.tableView.isHidden = false
+                            } else {
+                                print("Twas a Bust.....")
+                            }
+                        })
+                    }
+                })
+            }
+        }
     }
 
     @IBAction func ComparisonCoinPressed(_ sender: Any) {
     }
     
+    @IBAction func viewSwpiedDown(_ sender: Any) {
+        refreshCoins()
+    }
 }
 
 extension ProfitVC: UITableViewDataSource, UITableViewDelegate {

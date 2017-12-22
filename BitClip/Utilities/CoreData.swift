@@ -15,23 +15,51 @@ class CoreData {
     
     public private(set) var userCoins: [Coin] = []
     
-    private func fetchCoreData(completion: @escaping CompletionHandler) {
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Coin")
+    func saveToPhone(selectedCoin: coinTuple, completion: @escaping CompletionHandler) {
+        guard let managedContext = appDelegate?.persistentContainer.viewContext else {return}
+        let coin = Coin(context: managedContext)
+        
+        coin.name = selectedCoin.name
+        coin.price = selectedCoin.price
+        coin.percentChange = selectedCoin.percentChange
+        coin.comparedTo = selectedCoin.compareCoin
         
         do {
-            CoreData.instance.userCoins = try managedContext?.fetch(fetchRequest) as! [Coin]
+            try managedContext.save()
             completion(true)
         } catch {
             completion(false)
         }
     }
     
-    func fetchCoins() {
-        self.fetchCoreData { (complete) in
+    func updateCoinsOnPhone(completion: @escaping CompletionHandler) {
+        for userCoin in userCoins {
+            userCoin.setValue(userCoin.price, forKey: "price")
+            userCoin.setValue(userCoin.percentChange, forKey: "percentChange")
+        }
+        completion(true)
+    }
+    
+    func fetchCoreData(completion: @escaping CompletionHandler) {
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Coin")
+        
+        do {
+            userCoins = try managedContext?.fetch(fetchRequest) as! [Coin]
+            completion(true)
+        } catch {
+            print("Why tho")
+            completion(false)
+        }
+    }
+    
+    func fetchCoins(spinner: UIActivityIndicatorView?) {
+        CoreData.instance.fetchCoreData { (complete) in
             if complete {
-                BinanceService.instance.getCoinTrades(completion: { (complete) in
+                spinner?.isHidden = false
+                spinner?.startAnimating()
+                BinanceService.instance.getAllCoinData(completion: { (complete) in
                     if complete {
-                        
+                        spinner?.stopAnimating()
                     }
                 })
             }

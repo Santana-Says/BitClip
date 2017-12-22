@@ -14,17 +14,18 @@ class BinanceService {
     
     static let instance = BinanceService()
     
-    var allCoins: [coinTuple] = []
+    var bitData: Data!
     var allCoinNames: [String] = []
     
     
-    func getCoinTrades(completion: @escaping CompletionHandler) {
+    func getAllCoinData(completion: @escaping CompletionHandler) {
         Alamofire.request(TICKER_URL).responseJSON { (response) in
             if response.result.error == nil {
                 guard let data = response.data else {return}
-                self.getCoinNames(data: data)
+                self.bitData = data
+                self.coinParser(data: self.bitData)
                 
-                if self.allCoins.count > 0 {
+                if self.allCoinNames.count > 0 {
                     completion(true)
                 } else {
                     completion(false)
@@ -33,20 +34,40 @@ class BinanceService {
         }
     }
     
-    func getCoinNames(data: Data) {
+    func coinParser(data: Data) {
         let json = JSON(data)
         for info in json.arrayValue {
             let name = info["symbol"].stringValue
-            let coin = (
-                name,
-                info["lastPrice"].stringValue,
-                info["priceChangePercent"].stringValue,
-                setComparisonCoin(coin: name).rawValue
-            )
             
-            allCoins.append(coin)
-            allCoinNames.append(name)
+            //update the user coins
+            if let coinIndex = CoreData.instance.userCoins.index(where: {$0.name == name}) {
+                let userCoins = CoreData.instance.userCoins
+                userCoins[coinIndex].price = info["bidPrice"].stringValue
+                userCoins[coinIndex].percentChange = info["priceChangePercent"].stringValue
+            } else {
+                allCoinNames.append(name)
+            }
         }
+    }
+    
+    func getSingleCoinData(coinName: String) -> coinTuple {
+        let json = JSON(bitData)
+        var coin: coinTuple = ("","","","")
+        for info in json.arrayValue {
+            let cName = info["symbol"].stringValue
+            
+            
+            if cName == coinName{
+                coin.name = cName
+                coin.price = info["bidPrice"].stringValue
+                coin.percentChange = info["priceChangePercent"].stringValue
+                coin.compareCoin = setComparisonCoin(coin: cName).rawValue
+                //completion(true)
+                return coin
+            }
+        }
+        //completion(false)
+        return coin
     }
     
     func setComparisonCoin(coin: String) -> ComparisonCoinType {

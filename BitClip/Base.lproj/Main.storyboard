@@ -94,18 +94,28 @@
                                     <action selector="ComparisonCoinPressed:" destination="BYZ-38-t0r" eventType="valueChanged" id="6nB-U7-U8v"/>
                                 </connections>
                             </segmentedControl>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="NYW-sV-Wdc">
+                                <rect key="frame" x="189" y="350" width="37" height="37"/>
+                                <color key="color" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="KY0-Vh-PnH" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="9Ru-Up-Mbb"/>
                             <constraint firstItem="qPc-3m-Zxc" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="24" id="DP7-EN-o7t"/>
                             <constraint firstItem="KY0-Vh-PnH" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="Sjg-Vm-uWG"/>
+                            <constraint firstItem="NYW-sV-Wdc" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="URo-CU-Qd9"/>
+                            <constraint firstItem="NYW-sV-Wdc" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="qC9-ty-8Rv"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="qPc-3m-Zxc" secondAttribute="trailing" constant="40" id="sbC-MU-ejZ"/>
                             <constraint firstItem="qPc-3m-Zxc" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="40" id="tGy-eM-fpU"/>
                             <constraint firstItem="KY0-Vh-PnH" firstAttribute="top" secondItem="qPc-3m-Zxc" secondAttribute="bottom" constant="24" id="tRV-qM-uhJ"/>
                             <constraint firstItem="KY0-Vh-PnH" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="uak-Nq-Ac3"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="59y-Lc-Wc8" appends="YES" id="CpF-Zo-a6b"/>
+                        </connections>
                     </view>
                     <navigationItem key="navigationItem" title="BitClip" id="LeE-iJ-ObY">
                         <barButtonItem key="backBarButtonItem" title="Back" id="8zU-LZ-JzR"/>
@@ -117,10 +127,16 @@
                     </navigationItem>
                     <connections>
                         <outlet property="ComparisonSegControl" destination="qPc-3m-Zxc" id="Kp3-mt-uqS"/>
+                        <outlet property="spinner" destination="NYW-sV-Wdc" id="QQ6-Zq-sTz"/>
                         <outlet property="tableView" destination="KY0-Vh-PnH" id="aLq-0M-5Yf"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <swipeGestureRecognizer direction="down" id="59y-Lc-Wc8">
+                    <connections>
+                        <action selector="viewSwpiedDown:" destination="BYZ-38-t0r" id="tEn-K0-Bpr"/>
+                    </connections>
+                </swipeGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="475.36231884057975" y="132.88043478260872"/>
         </scene>

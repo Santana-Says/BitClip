@@ -17,7 +17,7 @@ class CoinListVC: UIViewController {
     
     //Variables
     var isSearching = false
-    var filteredData: [coinTuple] = []
+    var filteredData: [String] = []
     var selectedCoin: coinTuple!
     
     
@@ -26,24 +26,6 @@ class CoinListVC: UIViewController {
         searchBar.delegate = self
         tableView.delegate = self
         tableView.dataSource = self
-    }
-    
-    func saveToPhone(completion: @escaping CompletionHandler) {
-        guard let managedContext = appDelegate?.persistentContainer.viewContext else {return}
-        let coin = Coin(context: managedContext)
-        
-        coin.name = selectedCoin.name
-        coin.price = selectedCoin.price
-        coin.percentChange = selectedCoin.percentChange
-        coin.comparedTo = selectedCoin.compareCoin
-        
-        do {
-            try managedContext.save()
-            print("Saved")
-            completion(true)
-        } catch {
-            completion(false)
-        }
     }
 }
 
@@ -64,7 +46,7 @@ extension CoinListVC: UITableViewDelegate, UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "coinListCell") as? CoinListCell else {return UITableViewCell()}
         
         if isSearching {
-            selectedCoin = filteredData[indexPath.row]
+            selectedCoin = (name: filteredData[indexPath.row], "", "", "")
         } else {
             selectedCoin = (
                 CoreData.instance.userCoins[indexPath.row].name,
@@ -81,14 +63,14 @@ extension CoinListVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if !filteredData.isEmpty {
             //save coin to coredata
-            selectedCoin = filteredData[indexPath.row]
-            saveToPhone(completion: { (complete) in
+            selectedCoin = BinanceService.instance.getSingleCoinData(coinName: filteredData[indexPath.row])
+            CoreData.instance.saveToPhone(selectedCoin: selectedCoin, completion: { (complete) in
                 if complete {
                     self.searchBar.text = ""
                     self.isSearching = false
                     self.filteredData.removeAll()
                     self.view.endEditing(true)
-                    CoreData.instance.fetchCoins()
+                    CoreData.instance.fetchCoins(spinner: nil)
                     self.tableView.reloadData()
                 }
             })
@@ -106,7 +88,7 @@ extension CoinListVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         let deleteAction = UITableViewRowAction(style: .destructive, title: "DELETE") { (rowAction, indexPath) in
             CoreData.instance.removeCoin(atIndexPath: indexPath)
-            CoreData.instance.fetchCoins()
+            CoreData.instance.fetchCoins(spinner: nil)
             tableView.deleteRows(at: [indexPath], with: .automatic)
         }
         deleteAction.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
@@ -122,7 +104,8 @@ extension CoinListVC: UISearchBarDelegate {
             tableView.reloadData()
         } else {
             isSearching = true
-            filteredData = BinanceService.instance.allCoins.filter({$0.name.hasPrefix(searchBar.text!)})
+            filteredData =
+               BinanceService.instance.allCoinNames.filter({$0.hasPrefix(searchBar.text!)})
             tableView.reloadData()
         }
     }
